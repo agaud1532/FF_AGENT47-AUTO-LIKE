@@ -27,6 +27,11 @@ const bot = new TelegramBot(token, {
   polling: true,
 });
 
+bot.on("polling_error", (error) => {
+  console.error("Polling Error:");
+  console.error(error);
+});
+
 bot.on("message", (msg) => {
   if (msg.text.startsWith("/")) return;
 
