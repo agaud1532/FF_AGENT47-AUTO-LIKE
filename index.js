@@ -2,6 +2,7 @@ import TelegramBot from "node-telegram-bot-api";
 import helpCommand from "./commands/help.js";
 import startCommand from "./commands/start.js";
 import likeCommand from "./commands/like.js"
+import getCommand from "./commands/get.js";
 import dotenv from "dotenv";
 import express from "express";
 
@@ -41,3 +42,4 @@ bot.on("message", (msg) => {
 startCommand(bot);
 helpCommand(bot);
 likeCommand(bot)
+getCommand(bot);
