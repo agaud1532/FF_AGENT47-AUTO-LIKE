@@ -1,11 +1,10 @@
 {
   "name": "telegram-bot",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Telegram bot",
+  "main": "api/telegram.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
@@ -17,7 +16,6 @@
     "dotenv": "^17.4.2",
     "ejs": "^6.0.1",
     "express": "^5.2.1",
-    "node-telegram-bot-api": "^1.2.0",
-    "nodemon": "^3.1.14"
+    "node-telegram-bot-api": "^1.2.0"
   }
 }

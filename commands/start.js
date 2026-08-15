@@ -24,17 +24,16 @@ export default function startCommand(bot) {
               {
                 text: "📢 JOIN GROUP",
                 url: "https://t.me/freefiregloryORlikesbot",
-
-              }
+              },
             ],
             [
               {
                 text: "📢 AGENT47",
-                url: "t.me/FF_AGENT47"
-              }
-            ]
-          ]
-        }
+                url: "https://t.me/FF_AGENT47",
+              },
+            ],
+          ],
+        },
       }
     );
   });
