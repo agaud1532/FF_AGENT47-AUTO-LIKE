@@ -48,17 +48,17 @@ bot.on("message", async (msg) => {
 // Telegram webhook
 app.post("/", async (req, res) => {
   try {
-    console.log("Telegram update received");
+    console.log("Telegram update received:", req.body);
 
     await bot.processUpdate(req.body);
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
     });
   } catch (error) {
     console.error("Webhook Error:", error);
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       error: "Webhook error",
     });
