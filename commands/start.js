@@ -1,8 +1,9 @@
 export default function startCommand(bot) {
-  bot.onText(/\/start/i, (msg) => {
-    bot.sendMessage(
-      msg.chat.id,
-      `👋 <b>Welcome ${msg.from.first_name}!</b>
+  bot.onText(/\/start/i, async (msg) => {
+    try {
+      await bot.sendMessage(
+        msg.chat.id,
+        `👋 <b>Welcome ${msg.from?.first_name || "User"}!</b>
 
 ╔═══━━━✦❘༻༺❘✦━━━═══╗  
       🔥 𝐀𝐔𝐓𝐎𝐋𝐈𝐊𝐄 𝐆𝐑𝐎𝐔𝐏 🔥  
@@ -16,25 +17,33 @@ export default function startCommand(bot) {
 ╔═══━━━✦❘༻༺❘✦━━━═══╗  
 💎 𝑷𝒓𝒆𝒎𝒊𝒖𝒎 𝑺𝒆𝒓𝒗𝒊𝒄𝒆 | 🚀 𝑭𝒂𝒔𝒕 𝑹𝒆𝒔𝒖𝒍𝒕  
 ╚═══━━━✦❘༻༺❘✦━━━═══╝`,
-      {
-        parse_mode: "HTML",
-        reply_markup: {
-          inline_keyboard: [
-            [
-              {
-                text: "📢 JOIN GROUP",
-                url: "https://t.me/freefiregloryORlikesbot",
-              },
+        {
+          parse_mode: "HTML",
+          reply_markup: {
+            inline_keyboard: [
+              [
+                {
+                  text: "📢 JOIN GROUP",
+                  url: "https://t.me/freefiregloryORlikesbot",
+                },
+              ],
+              [
+                {
+                  text: "📢 AGENT47",
+                  url: "https://t.me/FF_AGENT47",
+                },
+              ],
             ],
-            [
-              {
-                text: "📢 AGENT47",
-                url: "https://t.me/FF_AGENT47",
-              },
-            ],
-          ],
-        },
-      }
-    );
+          },
+        }
+      );
+
+      console.log("START MESSAGE SENT");
+    } catch (error) {
+      console.error(
+        "START COMMAND ERROR:",
+        error.response?.body || error.message
+      );
+    }
   });
 }
