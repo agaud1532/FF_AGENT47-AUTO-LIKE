@@ -1,4 +1,3 @@
-import express from "express";
 import TelegramBot from "node-telegram-bot-api";
 import dotenv from "dotenv";
 
@@ -9,14 +8,10 @@ import getCommand from "../commands/get.js";
 
 dotenv.config();
 
-const app = express();
-
-app.use(express.json());
-
 const token = process.env.BOT_TOKEN;
 
 if (!token) {
-  console.error("BOT_TOKEN is missing");
+  throw new Error("BOT_TOKEN is missing");
 }
 
 const bot = new TelegramBot(token, {
@@ -31,9 +26,7 @@ getCommand(bot);
 
 // Normal messages
 bot.on("message", async (msg) => {
-  if (!msg.text) return;
-
-  if (msg.text.startsWith("/")) return;
+  if (!msg.text || msg.text.startsWith("/")) return;
 
   try {
     await bot.sendMessage(
@@ -45,8 +38,19 @@ bot.on("message", async (msg) => {
   }
 });
 
-// Telegram webhook
-app.post("/", async (req, res) => {
+export default async function handler(req, res) {
+  if (req.method === "GET") {
+    return res.status(200).json({
+      status: "Telegram webhook is working",
+    });
+  }
+
+  if (req.method !== "POST") {
+    return res.status(405).json({
+      error: "Method not allowed",
+    });
+  }
+
   try {
     console.log("Telegram update received:", req.body);
 
@@ -63,13 +67,4 @@ app.post("/", async (req, res) => {
       error: "Webhook error",
     });
   }
-});
-
-// Test
-app.get("/", (req, res) => {
-  res.status(200).json({
-    status: "Telegram webhook is working",
-  });
-});
-
-export default app;
+}
