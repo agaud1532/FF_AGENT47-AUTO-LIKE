@@ -1,17 +1,27 @@
+import express from "express";
 import TelegramBot from "node-telegram-bot-api";
+import dotenv from "dotenv";
 
 import helpCommand from "../commands/help.js";
 import startCommand from "../commands/start.js";
 import likeCommand from "../commands/like.js";
 import getCommand from "../commands/get.js";
 
+dotenv.config();
+
+const app = express();
+
+app.use(express.json());
+
 const token = process.env.BOT_TOKEN;
 
 if (!token) {
-  throw new Error("BOT_TOKEN is missing");
+  console.error("BOT_TOKEN is missing");
 }
 
-const bot = new TelegramBot(token);
+const bot = new TelegramBot(token, {
+  polling: false,
+});
 
 // Commands
 startCommand(bot);
@@ -21,7 +31,9 @@ getCommand(bot);
 
 // Normal messages
 bot.on("message", async (msg) => {
-  if (!msg.text || msg.text.startsWith("/")) return;
+  if (!msg.text) return;
+
+  if (msg.text.startsWith("/")) return;
 
   try {
     await bot.sendMessage(
@@ -33,24 +45,30 @@ bot.on("message", async (msg) => {
   }
 });
 
-// Vercel serverless function
-export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(200).send("Telegram bot is running");
-  }
-
+// Telegram webhook
+app.post("/", async (req, res) => {
   try {
-    await bot.processUpdate(req.body);
+    bot.processUpdate(req.body);
 
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
     });
   } catch (error) {
     console.error("Webhook Error:", error);
 
-    return res.status(500).json({
+    res.status(500).json({
       success: false,
-      error: error.message,
+      error: "Webhook error",
     });
   }
-}
+});
+
+// Health check
+app.get("/", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    bot: "running",
+  });
+});
+
+export default app;
