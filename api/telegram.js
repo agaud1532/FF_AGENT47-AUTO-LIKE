@@ -10,61 +10,44 @@ dotenv.config();
 
 const token = process.env.BOT_TOKEN;
 
-if (!token) {
-  throw new Error("BOT_TOKEN is missing");
-}
-
 const bot = new TelegramBot(token, {
   polling: false,
 });
 
-// Commands
 startCommand(bot);
 helpCommand(bot);
 likeCommand(bot);
 getCommand(bot);
 
-// Normal messages
-bot.on("message", async (msg) => {
-  if (!msg.text || msg.text.startsWith("/")) return;
-
-  try {
-    await bot.sendMessage(
-      msg.chat.id,
-      `Hello ${msg.from?.first_name || "User"}`
-    );
-  } catch (error) {
-    console.error("Message Error:", error);
-  }
-});
-
 export default async function handler(req, res) {
+  console.log("REQUEST:", req.method, req.url);
+
   if (req.method === "GET") {
     return res.status(200).json({
-      status: "Telegram webhook is working",
+      status: "working",
     });
   }
 
-  if (req.method !== "POST") {
-    return res.status(405).json({
-      error: "Method not allowed",
-    });
+  if (req.method === "POST") {
+    try {
+      console.log("TELEGRAM UPDATE:", req.body);
+
+      await bot.processUpdate(req.body);
+
+      return res.status(200).json({
+        success: true,
+      });
+    } catch (error) {
+      console.error("ERROR:", error);
+
+      return res.status(500).json({
+        success: false,
+        error: error.message,
+      });
+    }
   }
 
-  try {
-    console.log("Telegram update received:", req.body);
-
-    await bot.processUpdate(req.body);
-
-    return res.status(200).json({
-      success: true,
-    });
-  } catch (error) {
-    console.error("Webhook Error:", error);
-
-    return res.status(500).json({
-      success: false,
-      error: "Webhook error",
-    });
-  }
+  return res.status(405).json({
+    error: "Method not allowed",
+  });
 }
