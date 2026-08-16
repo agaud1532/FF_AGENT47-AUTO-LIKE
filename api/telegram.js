@@ -46,7 +46,7 @@ bot.on("message", async (msg) => {
 });
 
 // Telegram webhook
-app.post("/telegram", async (req, res) => {
+app.post("/", async (req, res) => {
   try {
     console.log("Telegram update received:", req.body);
 
