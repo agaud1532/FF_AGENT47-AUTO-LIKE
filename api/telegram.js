@@ -22,11 +22,7 @@ const bot = new TelegramBot(token, {
 // LEVEL UP SESSIONS
 // ==========================================
 
-levelUpSessions[chatId] = {
-  email,
-  status: "verification_requested",
-  createdAt: new Date()
-};
+const levelUpSessions = {};
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -509,7 +505,9 @@ export default async function handler(req, res) {
       console.log("LEVEL UP COMMAND RECEIVED");
 
       levelUpSessions[chatId] = {
-        step: "email",
+        email,
+        status: "verification_requested",
+        createdAt: new Date()
       };
 
       await bot.sendMessage(
