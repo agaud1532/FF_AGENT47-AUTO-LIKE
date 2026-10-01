@@ -594,6 +594,31 @@ Please check and send that verification code. After completing it,
     }
 
 
+    // ------------------------------------------
+    // STEP 3: LEVEL UP UNDER PROGRESS
+    // ------------------------------------------
+
+    if (session.step === "levelup_pending") {
+
+      console.log("LEVEL UP STATUS REQUESTED");
+
+      await bot.sendMessage(
+        chatId,
+        `⏳ Your Level Up request is currently under progress.
+
+✅ Your verification process has been completed.
+🔄 We are processing your Level Up request.
+
+Please wait a little longer. You will be notified once the process is completed.
+
+🙏 Thank you for your patience.`
+      );
+
+      return res.status(200).json({
+        success: true,
+      });
+    }
+
     // ==========================================
     // NORMAL MESSAGE
     // ==========================================
