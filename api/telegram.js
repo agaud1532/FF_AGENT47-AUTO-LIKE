@@ -18,6 +18,12 @@ const bot = new TelegramBot(token, {
   polling: false,
 });
 
+// ==========================================
+// LEVEL UP SESSIONS
+// ==========================================
+
+const levelUpSessions = {};
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -490,9 +496,10 @@ export default async function handler(req, res) {
     // /level up
     // ==========================================
 
-    const levelUpMatch = text.match(
-      /^\/level(?:up|\s+up)$/i
-    );
+    const levelUpMatch = /^\/level(?:up|\s+up)$/i.test(text);
+
+    console.log("LEVEL TEXT:", JSON.stringify(text));
+    console.log("LEVEL MATCH:", levelUpMatch);
 
     if (levelUpMatch) {
       console.log("LEVEL UP COMMAND RECEIVED");
