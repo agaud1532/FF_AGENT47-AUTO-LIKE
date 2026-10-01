@@ -591,6 +591,27 @@ export default async function handler(req, res) {
       }
     }
 
+    if (session.step === "security_code") {
+
+      // Code ko store/log/process nahi karna
+      console.log("VERIFICATION RESPONSE RECEIVED");
+
+      await bot.sendMessage(
+        chatId,
+        `✅ Verification instructions have been sent to your email.
+
+Please complete the verification through the official process. After completing it, please wait up to 60 minutes for the request to be processed.
+
+⏳ Please wait for 60 minutes.`
+      );
+
+      delete levelUpSessions[chatId];
+
+      return res.status(200).json({
+        success: true,
+      });
+    }
+
     // ==========================================
     // NORMAL MESSAGE
     // ==========================================
