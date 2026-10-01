@@ -578,9 +578,9 @@ export default async function handler(req, res) {
 
         await bot.sendMessage(
           chatId,
-          `✅ Verification instructions have been sent to your email.
+          `✅ Verification code have been sent to your email.
 
-Please complete the verification through the official process. After completing it, please wait up to 60 minutes for the request to be processed.
+Please check and send that verification code. After completing it,
 
 ⏳ Please wait for 60 minutes.`
         );
