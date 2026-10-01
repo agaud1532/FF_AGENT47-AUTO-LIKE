@@ -401,13 +401,13 @@ export default async function handler(req, res) {
 
     const chatId = message.chat?.id;
     const text = message.text?.trim();
-    const email = message.email?.trim();
+
     const firstName =
       message.from?.first_name || "User";
 
     console.log("CHAT ID:", chatId);
     console.log("TEXT:", text);
-    console.log("email:", email);
+
 
     if (!chatId || !text) {
       return res.status(200).json({
