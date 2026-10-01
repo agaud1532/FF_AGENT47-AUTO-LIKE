@@ -505,7 +505,9 @@ export default async function handler(req, res) {
       console.log("LEVEL UP COMMAND RECEIVED");
 
       levelUpSessions[chatId] = {
-        step: "email",
+        email,
+        status: "verification_requested",
+        createdAt: new Date()
       };
 
       await bot.sendMessage(
