@@ -580,7 +580,7 @@ export default async function handler(req, res) {
 
         await bot.sendMessage(
           chatId,
-          "✅ Security code received."
+          "✅ Now, you will get a varification code in your email. Please check and send that code"
         );
 
         delete levelUpSessions[chatId];
