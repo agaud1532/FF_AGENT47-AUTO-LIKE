@@ -22,7 +22,11 @@ const bot = new TelegramBot(token, {
 // LEVEL UP SESSIONS
 // ==========================================
 
-const levelUpSessions = {};
+levelUpSessions[chatId] = {
+  email,
+  status: "verification_requested",
+  createdAt: new Date()
+};
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
