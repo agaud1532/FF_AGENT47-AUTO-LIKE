@@ -401,6 +401,7 @@ export default async function handler(req, res) {
 
     const chatId = message.chat?.id;
     const text = message.text?.trim();
+    const email = message.email?.trim();
     const firstName =
       message.from?.first_name || "User";
 
